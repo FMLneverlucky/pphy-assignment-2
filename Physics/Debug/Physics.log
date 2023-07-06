@@ -1,0 +1,69 @@
+﻿  Application.cpp
+  Camera.cpp
+  GameObject.cpp
+  LoadOBJ.cpp
+  LoadTGA.cpp
+  main.cpp
+  Mesh.cpp
+  MeshBuilder.cpp
+  SceneAsteroid.cpp
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(176,39): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(182,39): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(201,44): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(201,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(201,20): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(263,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(264,31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(273,49): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(276,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(305,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(313,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(313,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(394,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(440,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(471,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(492,59): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(492,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(494,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(509,58): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(509,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(513,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(539,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(539,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(539,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(561,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(561,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(561,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(600,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(600,33): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(600,21): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(650,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(650,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneAsteroid.cpp(650,22): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  SceneBase.cpp
+  SceneCollision.cpp
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneCollision.cpp(75,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneCollision.cpp(94,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneCollision.cpp(109,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneCollision.cpp(129,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneCollision.cpp(143,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  SceneKinematics.cpp
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(58,23): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(63,23): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(93,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(93,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(109,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(109,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(132,54): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(132,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(150,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(151,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(199,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(200,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(226,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Physics\Source\SceneKinematics.cpp(227,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  shader.cpp
+  Utility.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Physics.vcxproj -> C:\Users\jingj\OneDrive\Desktop\DM2212_Physics\Debug\Physics.exe
