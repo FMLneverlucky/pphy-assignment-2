@@ -20,6 +20,8 @@ public:
 
 	GameObject* FetchGO();
 	void ReturnGO(GameObject *go);
+	bool checkcollision(GameObject* go1, GameObject* go2);
+	void collisionResponse(GameObject* go1, GameObject* go2);
 protected:
 
 	//Physics

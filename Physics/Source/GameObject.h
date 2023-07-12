@@ -24,6 +24,7 @@ struct GameObject
 	Vector3 vel;
 	Vector3 scale;
 	Vector3 dir;
+	Vector3 color;
 	int health;
 	bool active;
 	float mass;

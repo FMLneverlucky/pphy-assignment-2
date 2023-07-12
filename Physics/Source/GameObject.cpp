@@ -9,7 +9,8 @@ GameObject::GameObject(GAMEOBJECT_TYPE typeValue)
 	mass(1.f),
 	dir(0, 1, 0),
 	momentOfIntertia(1.f),
-	angularVelocity(0.f)
+	angularVelocity(0.f),
+	color(1)
 {
 }
 

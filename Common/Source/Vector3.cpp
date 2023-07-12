@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*!
 \file	Vector3.cpp
-\author Wen Sheng Tang
+\author Wen Sheng Tang \ Lim Chian Song
 \par	email: tang_wen_sheng\@nyp.edu.sg
 \brief
 Struct to define a 3D vector
@@ -78,7 +78,7 @@ void Vector3::Set( float a, float b, float c )
 /******************************************************************************/
 void Vector3::SetZero( void )
 {
-	x = y = z = 0.0f;
+	Set(0.0f, 0.0f, 0.0f);
 }
 
 /******************************************************************************/
@@ -188,7 +188,7 @@ operator* overload for scalar multiplication
 */
 Vector3 Vector3::operator*( float scalar ) const
 {
-	return Vector3(scalar * x, scalar * y, scalar * z);
+	return Vector3(scalar * x,scalar * y,scalar * z);
 }
 
 /******************************************************************************/
@@ -224,7 +224,9 @@ operator== overload for equality check, using Math::EPSILON
 /******************************************************************************/
 bool Vector3::operator==( const Vector3& rhs ) const
 {
-	return IsEqual(x, rhs.x) && IsEqual(y, rhs.y) && IsEqual(z, rhs.z);
+	return IsEqual(x, rhs.x) &&
+			IsEqual(y, rhs.y) &&
+			IsEqual(z, rhs.z);
 }
 
 /******************************************************************************/
@@ -240,7 +242,9 @@ operator!= overload for inequality check, using Math::EPSILON
 /******************************************************************************/
 bool Vector3::operator!= ( const Vector3& rhs ) const
 {
-	return !IsEqual(x, rhs.x) || !IsEqual(y, rhs.y) || !IsEqual(z, rhs.z);
+	return !IsEqual(x, rhs.x) ||
+			!IsEqual(y, rhs.y) ||
+			!IsEqual(z, rhs.z);
 }
 
 /******************************************************************************/
@@ -272,7 +276,7 @@ Return length of vector
 /******************************************************************************/
 float Vector3::Length( void ) const
 {
-  return sqrt(x * x + y * y + z * z);
+	return sqrt(x * x + y * y + z * z);
 }
 
 /******************************************************************************/
@@ -286,7 +290,75 @@ Return square of length of vector
 /******************************************************************************/
 float Vector3::LengthSquared (void ) const
 {
-	return x * x + y * y + z * z;
+	return (x * x + y * y + z * z);
+}
+
+/******************************************************************************/
+/*
+\brief Distance operation using the length
+
+\param rhs
+	Vector to assign
+
+\return
+	A float of the distance between the current and rhs
+*/
+/******************************************************************************/
+float Vector3::Distance(const Vector3& rhs) const
+{
+	return (*this - rhs).Length();
+}
+
+/******************************************************************************/
+/*
+\brief Distance operation using the length
+
+\param rhs
+	Vector to assign
+
+\return
+	A float of the distance between the current and rhs
+*/
+/******************************************************************************/
+float Vector3::DistanceSquared(const Vector3& rhs) const
+{
+	return (*this - rhs).LengthSquared();
+}
+
+/******************************************************************************/
+/*!
+\brief
+Get The Distance between 2 Vector
+
+\param lhs
+	Vector 1
+\param rhs
+	Vector 2
+\return
+	distance between the 2 vector
+*/
+/******************************************************************************/
+float Vector3::Distance(const Vector3& lhs, const Vector3& rhs)
+{
+	return (lhs - rhs).Length();
+}
+
+/******************************************************************************/
+/*!
+\brief
+Get The Squared Distance between 2 Vector
+
+\param lhs
+	Vector 1
+\param rhs
+	Vector 2
+\return
+	distance between the 2 vector
+*/
+/******************************************************************************/
+float Vector3::DistanceSquared(const Vector3& lhs, const Vector3& rhs)
+{
+	return (lhs - rhs).LengthSquared();
 }
 
 /******************************************************************************/
@@ -318,7 +390,9 @@ Cross product of 2 vectors
 /******************************************************************************/
 Vector3 Vector3::Cross( const Vector3& rhs ) const
 {
-	return Vector3(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z, x * rhs.y - y * rhs.x);
+	return Vector3(y * rhs.z - z * rhs.y,
+					z * rhs.x - x * rhs.z,
+					x * rhs.y - y * rhs.x);
 }
 
 /******************************************************************************/
@@ -337,8 +411,8 @@ Return a copy of this vector, normalized
 Vector3 Vector3::Normalized( void ) const throw( DivideByZero )
 {
 	float d = Length();
-	if(d <= Math::EPSILON && -d <= Math::EPSILON)
-	  throw DivideByZero();
+	if (d <= Math::EPSILON && -d <= Math::EPSILON)
+		throw DivideByZero();
 	return Vector3(x / d, y / d, z / d);
 }
 
@@ -358,17 +432,33 @@ Normalize this vector and return a reference to it
 Vector3& Vector3::Normalize( void ) throw( DivideByZero )
 {
 	float d = Length();
-	if(d <= Math::EPSILON && -d <= Math::EPSILON)
-	  throw DivideByZero();
+	if (d <= Math::EPSILON && -d <= Math::EPSILON)
+		throw DivideByZero();
 	x /= d;
 	y /= d;
 	z /= d;
 	return *this;
 }
+/******************************************************************************/
+//
+//UTILITY FUNCTIONS
+//
+/******************************************************************************/
+/*!
+\brief
+operator<< for ostream to be use for cout
 
+\param os
+	reference to the ostream
+\param rhs
+	reference to the right side operand which is a Vector3
+\return
+	Resulting the updated ostream
+*/
+/******************************************************************************/
 std::ostream& operator<< (std::ostream& os, Vector3& rhs)
 {
-	os << "[ " << rhs.x << ", " << rhs.y << ", " << rhs.z << " ]";
+	os << "[x: " << rhs.x << " , y: " << rhs.y << " , z: " << rhs.z << " ]";
 	return os;
 }
 

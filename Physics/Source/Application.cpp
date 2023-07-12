@@ -125,7 +125,7 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene = new SceneAsteroid();
+	Scene *scene = new SceneCollision(); //set which scene to run here
 	scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
