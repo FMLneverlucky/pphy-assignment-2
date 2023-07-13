@@ -17,6 +17,7 @@ struct GameObject
 		GO_ENEMY,
 		GO_MISSLE,
 		GO_POWERUP,
+		GO_WALL, //week 13 1a - object addition
 		GO_TOTAL, //must be last
 	};
 	GAMEOBJECT_TYPE type;
@@ -25,6 +26,7 @@ struct GameObject
 	Vector3 scale;
 	Vector3 dir;
 	Vector3 color;
+	Vector3 normal; //week 13 1b - variable addition [ball bounce off surface to direction of normal]
 	int health;
 	bool active;
 	float mass;

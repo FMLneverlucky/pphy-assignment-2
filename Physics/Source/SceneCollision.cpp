@@ -15,8 +15,6 @@ void SceneCollision::Init()
 {
 	SceneBase::Init();
 
-	bLightEnabled = true;
-
 	//Calculating aspect ratio
 	m_worldHeight = 100.f;
 	m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
@@ -34,6 +32,24 @@ void SceneCollision::Init()
 	bLightEnabled = true;
 
 	m_ghost = new GameObject(GameObject::GO_BALL);
+
+	//week 13 
+	float angle = Math::QUARTER_PI;//octogon shape thing?
+	float wallLength = 40;
+	float radius = wallLength * 0.5f / tan(angle * .5f); // refer to week 13 practical A to see octogonal boundary
+
+	for (int i = 0; i < 8; ++i)
+	{
+		GameObject* go = FetchGO();
+		go->type = GameObject::GO_WALL;
+		go->scale.Set(2.f, wallLength + .9f, 1.f);
+		go->pos = Vector3(radius * cosf(i * angle) + m_worldWidth / 2, radius * sinf(i * angle) + m_worldHeight / 2, 0.f);
+		go->normal = Vector3(cosf(i * angle), sinf(i * angle), 0.f);
+		go->color.Set(0, 0, 1);
+		go->vel.SetZero(); //no move so yes
+	}
+
+	makeThinWall(5.f, 20.f, Vector3(0, 1, 0), Vector3(m_worldWidth / 2, m_worldHeight / 2, 0));
 }
 
 GameObject* SceneCollision::FetchGO() //add objects 
@@ -197,16 +213,51 @@ void SceneCollision::Update(double dt)
 	}
 }
 
+//week 13 exercise 2 - create the thin physical wall
+void SceneCollision::makeThinWall(float width, float height, const Vector3& normal, const Vector3& pos)
+{
+	GameObject* thinWall = FetchGO();
+	thinWall->type = GameObject::GO_WALL;
+	thinWall->scale.Set(width, height, 1.f);
+	thinWall->pos = pos;
+	thinWall->normal = normal;
+	thinWall->color.Set(1, 0, 0);
+	thinWall->vel.SetZero();
+}
 bool SceneCollision::checkcollision(GameObject* go1, GameObject* go2)
 {
-	//Exercise 8a: handle collision between GO_BALL and GO_BALL using velocity swap
-	Vector3 relativeVel = go2->vel - go1->vel;
-	Vector3 distanceDiff = go2->pos - go1->pos;
-
-	if (relativeVel.Dot(distanceDiff) <= 0)
+	//week 13 - check non ball vs ball
+	if (go1->type != GameObject::GO_BALL)// if one object is not ball
 		return false;
 
-	return distanceDiff.LengthSquared() <= (go1->scale.x + go2->scale.x) * (go1->scale.x + go2->scale.x);//returning distance between both objects if no collision
+	switch (go2->type)
+	{
+		case GameObject::GO_BALL:
+		{
+			//week 12 Exercise 8a: handle collision between GO_BALL and GO_BALL using velocity swap
+			Vector3 relativeVel = go2->vel - go1->vel;
+			Vector3 distanceDiff = go2->pos - go1->pos;
+
+			if (relativeVel.Dot(distanceDiff) <= 0)
+				return false;
+
+			return distanceDiff.LengthSquared() <= (go1->scale.x + go2->scale.x) * (go1->scale.x + go2->scale.x);//returning distance between both objects if no collision
+		}
+		case GameObject::GO_WALL:
+		{
+			Vector3 diff = go1->pos - go2->pos;
+			Vector3 axisX = go2->normal;	//check which direction its pointing to
+			Vector3 axisY = Vector3(-go2->normal.y, go2->normal.x, 0);
+
+			float projectedDist = diff.Dot(axisX);
+
+			if (projectedDist > 0)
+				axisX = -axisX;
+			return go1->vel.Dot(axisY) >= 0 &&	//check if travelling towards the wall
+				go2->scale.x * .5 + go1->scale.x > -diff.Dot(axisX) && //check if radius +thickness vs dist
+				go2->scale.y * .5 > fabs(diff.Dot(axisY));	//check the length is within (something she didnt finish her sentence)
+		}
+	}
 }
 
 void SceneCollision::collisionResponse(GameObject* go1, GameObject* go2)
@@ -260,6 +311,16 @@ void SceneCollision::RenderGO(GameObject *go)
 		RenderMesh(meshList[GEO_BALL], true);	//parameters: [mesh] [enable lighting]
 		modelStack.PopMatrix();
 		//exercise 11 end
+		break;
+
+	case GameObject::GO_WALL:
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Rotate(Math::RadianToDegree(atan2f(go->normal.y, go->normal.x)), 0, 0, 1);	//part of some exercise - rotate to normal
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		meshList[GEO_CUBE]->material.kAmbient.Set(go->color.x, go->color.y, go->color.z); //setting colour by the material like in any model making software
+		RenderMesh(meshList[GEO_CUBE], true);
+		modelStack.PopMatrix();
 		break;
 	}
 }

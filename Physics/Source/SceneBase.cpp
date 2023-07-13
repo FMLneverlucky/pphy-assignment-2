@@ -116,7 +116,7 @@ void SceneBase::Init()
 	meshList[GEO_ENEMY] = MeshBuilder::GenerateQuad("enemy", Color(1, 1, 1), 10.f);
 	meshList[GEO_ENEMY]->textureID = LoadTGA("Image//enemy.tga");
 	meshList[GEO_TEXTBOX] = MeshBuilder::GenerateQuad("textbox", Color(0.3f, 0.3f, 0.3f), 2.f);
-	bLightEnabled = true;
+	bLightEnabled = false;
 }
 
 void SceneBase::Update(double dt)
