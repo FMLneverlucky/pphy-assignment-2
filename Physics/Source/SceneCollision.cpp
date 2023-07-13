@@ -15,6 +15,8 @@ void SceneCollision::Init()
 {
 	SceneBase::Init();
 
+	bLightEnabled = true;
+
 	//Calculating aspect ratio
 	m_worldHeight = 100.f;
 	m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
@@ -107,7 +109,7 @@ void SceneCollision::Update(double dt)
 		//exercise 6b: set position, scale and mass -> also vel but we dont talk about that
 		m_ghost->active = true;
 		m_ghost->pos = mousepos;
-		m_ghost->scale = 2;
+		m_ghost->scale.Set(2, 2, 2);
 		m_ghost->mass = 8;
 		m_ghost->color.Set(Math::RandFloatMinMax(0,1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 	}
@@ -134,7 +136,7 @@ void SceneCollision::Update(double dt)
 		//exercise 9: right click spawn ball
 		m_ghost->active = true;
 		m_ghost->pos = mousepos;
-		m_ghost->scale = 3;
+		m_ghost->scale.Set(3, 3, 3);
 		m_ghost->mass = 27;
 		m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 	}
@@ -145,7 +147,7 @@ void SceneCollision::Update(double dt)
 
 		//Exercise 10: spawn large GO_BALL
 		float size = Math::Clamp((mousepos - m_ghost->pos).Length(), 2.f, 10.f);
-		m_ghost->scale = size;
+		m_ghost->scale.Set(size, size, size);
 		m_ghost->mass = size * size * size;	//damn thats heavy
 		//the further the mouse drag away from click position, the faster the vel of ball
 	}

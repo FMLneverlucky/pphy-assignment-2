@@ -656,7 +656,7 @@ void SceneAsteroid::RenderGO(GameObject *go)
 		modelStack.PushMatrix();
 		modelStack.Translate(go->pos.x, go->pos.y, zvalue);
 		modelStack.Scale(0.4f, 0.4f, 0.4f);
-		RenderMesh(meshList[GEO_BALL], false);
+		RenderMesh(meshList[GEO_BALL], true);
 		modelStack.PopMatrix();
 		break;
 
