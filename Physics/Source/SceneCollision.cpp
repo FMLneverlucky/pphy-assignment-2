@@ -262,7 +262,7 @@ bool SceneCollision::checkcollision(GameObject* go1, GameObject* go2)
 		case GameObject::GO_BALL:
 		{
 			//week 12 Exercise 8a: handle collision between GO_BALL and GO_BALL using velocity swap
-			Vector3 relativeVel = go2->vel - go1->vel;
+			Vector3 relativeVel = go1->vel - go2->vel;
 			Vector3 distanceDiff = go2->pos - go1->pos;
 
 			if (relativeVel.Dot(distanceDiff) <= 0)
@@ -280,7 +280,7 @@ bool SceneCollision::checkcollision(GameObject* go1, GameObject* go2)
 
 			if (projectedDist > 0)
 				axisX = -axisX;
-			return go1->vel.Dot(axisY) >= 0 &&	//check if travelling towards the wall
+			return go1->vel.Dot(axisX) >= 0 &&	//check if travelling towards the wall
 				go2->scale.x * .5 + go1->scale.x > -diff.Dot(axisX) && //check if radius +thickness vs dist
 				go2->scale.y * .5 > fabs(diff.Dot(axisY));	//check the length is within (something she didnt finish her sentence)
 		}
