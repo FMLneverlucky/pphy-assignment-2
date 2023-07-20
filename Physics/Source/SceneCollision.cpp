@@ -201,7 +201,33 @@ void SceneCollision::Update(double dt)
 			}
 			//exercise 7 end;
 
+			/*week 13 exercise 4
+			for collision response*/
+			GameObject* go2 = nullptr; //can be any other obj
+			for (std::vector<GameObject*>::iterator it2 = it + 1; it2 != m_goList.end(); ++it2)
+			{
+				GameObject* go2 = static_cast<GameObject*>(*it2);
+				if (go2->active)
+				{
+					//when ball collide with wall detected, make ball bounce
+					if (checkcollision(go, go2))
+					{
+						collisionResponse(go, go2);
+					}
+				}
+				GameObject* other(go);//?
+				GameObject* other1(go2);//????
 
+				if (go->type != GameObject::GO_BALL)
+				{
+					other = go2;
+					other1 = go;
+				}
+				if (go2->active && checkcollision(other, other1))
+				{
+					collisionResponse(other, other1);
+				}
+			}
 			//Exercise 8b: store values in auditing variables
 
 			//Exercise 10: handle collision using momentum swap instead
@@ -224,6 +250,7 @@ void SceneCollision::makeThinWall(float width, float height, const Vector3& norm
 	thinWall->color.Set(1, 0, 0);
 	thinWall->vel.SetZero();
 }
+
 bool SceneCollision::checkcollision(GameObject* go1, GameObject* go2)
 {
 	//week 13 - check non ball vs ball
@@ -269,6 +296,9 @@ void SceneCollision::collisionResponse(GameObject* go1, GameObject* go2)
 	m1 = go1->mass;
 	m2 = go2->mass;
 
+	//simulate bouncing of ball
+	//vers 1 of collision response -> typed based on formula
+	/*
 	Vector3 n = go1->pos - go2->pos;//finding normal
 	Vector3 un = n.Normalized(); //prevent throwing of 0
 	Vector3 ut = Vector3(-un.y, un.x, 0);
@@ -292,6 +322,26 @@ void SceneCollision::collisionResponse(GameObject* go1, GameObject* go2)
 	//final velocity
 	go1->vel = v1nVec + v1tVec;
 	go2->vel = v2nVec + v2nVec;
+	*/
+
+	switch (go2->type)
+	{
+		case GameObject::GO_BALL:
+		{
+			//version 2 of check collision response -> shorter version of vers 1
+			//this is based on some formula provided in lecture notes or practical 13 -> most likely in practical
+			Vector3 n = go1->pos - go2->pos; //finding normal
+			Vector3 vec = (u1 - u2).Dot(n)  /(n).LengthSquared() * n;
+			go1->vel = u1 - (2 * m2 / (m1 + m2)) * vec; //u = vel, m = mass
+			go2->vel = u2 - (2 * m1 / (m2 + m1)) * -vec;
+			break;
+		}
+		case GameObject::GO_WALL:
+		{
+			go1->vel = u1 - (2. * u1.Dot(go2->normal)) * go2->normal; //formula -> v = u - (2u.N)N
+			break;
+		}
+	}
 }
 
 
