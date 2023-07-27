@@ -20,11 +20,14 @@ public:
 
 	GameObject* FetchGO();
 	void ReturnGO(GameObject *go);
-	//done on week 12
-	bool checkcollision(GameObject* go1, GameObject* go2);
-	void collisionResponse(GameObject* go1, GameObject* go2);
-	//week 13 exercise
-	void makeThinWall(float width, float height, const Vector3& normal,const Vector3& pos);
+
+	// No.8
+	bool CheckCollision(GameObject* go1, GameObject* go2);
+	void CollisionResponse(GameObject* go1, GameObject* go2);
+	//
+
+	// Week 13 Exercise 2
+	void MakeThinWall(float width, float height, const Vector3& normal, const Vector3& pos);
 
 protected:
 
