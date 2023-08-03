@@ -19,6 +19,7 @@ struct GameObject
 		GO_POWERUP,
 		GO_WALL, //week 13 1a - object addition
 		GO_PILLAR, //miss tans object addition
+		GO_P,
 		GO_TOTAL, //must be last
 	};
 	GAMEOBJECT_TYPE type;

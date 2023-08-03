@@ -31,12 +31,12 @@ void SceneCollision::Init()
 	m_ghost = new GameObject(GameObject::GO_BALL);
 
 	// Week 13 Exercise 4
-	float angle = Math::QUARTER_PI;
+	float angle = Math::HALF_PI;
 	float wallLength = 40;
 	float radius = wallLength * 0.5f / tan(angle * 0.5f);
 
 	//Create octogonal shape -  Week 13 Exercise 4
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		GameObject* go = FetchGO();
 		go->type = GameObject::GO_WALL;
@@ -50,8 +50,11 @@ void SceneCollision::Init()
 	}
 
 	// Week 13 Exercise 4
-	MakeThinWall(4.0f, 20.0f, Vector3(0, 1, 0), Vector3(m_worldWidth / 2, m_worldHeight / 2, 0.0f));
+	//---------------------------- OBJECT PLACEMENT HERE---------------------------------------
+	MakeThinWall(4.0f, 20.0f, Vector3(0, 1, 0), Vector3(m_worldWidth / 2, m_worldHeight / 2, 0.0f)); //this is red rectangle in the middle
 
+	/*
+	//this is the 2 big balls beside each end of red rectangle
 	//Pillar 1 
 	GameObject* pillar = FetchGO();
 	pillar->type = GameObject::GO_PILLAR;
@@ -65,7 +68,14 @@ void SceneCollision::Init()
 	pillar->color.Set(1, 0, 1);
 	pillar->scale.Set(10, 10, 1);
 	pillar->pos = Vector3(m_worldWidth / 2 - m_worldWidth / 4, m_worldHeight / 2, 0);
-	
+
+	*/
+	GameObject* brick = FetchGO();
+	brick->type = GameObject::GO_P;
+	brick->color.Set(1, 0.5f, 0);
+	brick->scale.Set(5, 5, 1);
+	brick->pos = Vector3(m_worldWidth / 2 + m_worldWidth / 4, m_worldHeight / 2, 0);
+	brick->health = 5;
 }
 
 GameObject* SceneCollision::FetchGO()
@@ -327,6 +337,7 @@ bool SceneCollision::CheckCollision(GameObject* go1, GameObject* go2)
 	switch (go2->type)
 	{
 		case GameObject::GO_PILLAR:
+		case GameObject::GO_P:
 		case GameObject::GO_BALL:
 		{
 			Vector3 relativeVel = go1->vel - go2->vel;
@@ -432,6 +443,24 @@ void SceneCollision::CollisionResponse(GameObject* go1, GameObject* go2)
 			go1->vel = u1 - (2.0 * u1.Dot(n)) * n;
 			break;
 		}
+		case GameObject::GO_P:
+		{
+   			if (go2->health > 1)
+			{
+				//this is pillar collision response
+				Vector3 n = (go2->pos - go1->pos).Normalize();
+				go1->vel = u1 - (2.0 * u1.Dot(n)) * n;
+
+				//brick reduce 1 health when ball bounce off brick
+				go2->health -= 1;
+			}
+			else
+			{
+				go1->vel = u1 - (2.0 * u1.Dot(go2->normal)) * go2->normal;
+				go2->active = false;
+			}
+			break;
+		}
 	}
 }
 
@@ -441,6 +470,18 @@ void SceneCollision::RenderGO(GameObject *go)
 	{
 
 	case GameObject::GO_PILLAR:
+		break;
+	case GameObject::GO_P: // new // A block to be destroyed.
+		modelStack.PushMatrix();
+		modelStack.Translate(go->pos.x, go->pos.y, go->pos.z);
+		modelStack.Rotate(Math::RadianToDegree(atan2f(go->normal.y, go->normal.x)), 0, 0, 1);
+		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
+		meshList[GEO_CUBE]->material.kAmbient.Set(go->color.x, go->color.y, go->color.z);
+		RenderMesh(meshList[GEO_CUBE], true);
+		modelStack.PopMatrix();
+		RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(go->health), Color(1, 1, 1
+		), 10, 5, go->pos.y);
+		break;
 	case GameObject::GO_BALL:
 		//Exercise 4: render a sphere using scale and pos
 		modelStack.PushMatrix();
