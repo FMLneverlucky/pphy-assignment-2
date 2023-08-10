@@ -1,10 +1,10 @@
 ﻿  SceneCollision.cpp
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(142,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(142,21): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(228,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(437,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(443,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(452,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(459,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(379): warning C4715: 'SceneCollision::CheckCollision': not all control paths return a value
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(154,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(154,21): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(273,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(484,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(490,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(499,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(506,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(426): warning C4715: 'SceneCollision::CheckCollision': not all control paths return a value
   Physics.vcxproj -> C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Debug\Physics.exe

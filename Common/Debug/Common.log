@@ -1,5 +1,6 @@
 ﻿  MatrixStack.cpp
   Mtx44.cpp
+  timer.cpp
   Vector3.cpp
   Generating Code...
   Common.vcxproj -> C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Debug\Common.lib

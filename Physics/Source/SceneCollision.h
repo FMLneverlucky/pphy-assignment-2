@@ -30,6 +30,15 @@ public:
 	void MakeThinWall(float width, float height, const Vector3& normal, const Vector3& pos);
 
 protected:
+	enum GAME_STATE
+	{
+		AIMING, //before ball release
+		SHOOTING, //after ball release
+		WAITING, //after 1st ball returns to starting line
+		NUM_STATES
+	};
+
+	GAME_STATE currentGameState;
 
 	//Physics
 	std::vector<GameObject *> m_goList;
@@ -42,6 +51,9 @@ protected:
 	//Auditing
 	float m1, m2;
 	Vector3 u1, u2, v1, v2;
+
+	//starting line
+	float startingLine_pos;
 };
 
 #endif

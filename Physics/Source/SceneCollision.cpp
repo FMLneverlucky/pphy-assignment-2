@@ -15,6 +15,9 @@ void SceneCollision::Init()
 {
 	SceneBase::Init();
 
+	//starting state
+	currentGameState = AIMING;
+
 	//Calculating aspect ratio
 	m_worldHeight = 100.f;
 	m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
@@ -24,16 +27,25 @@ void SceneCollision::Init()
 	
 	Math::InitRNG();
 
+	//this is starting line where player release ball
+	startingLine_pos = 10.f; //this is a y value
+
 	//Exercise 1: initialize m_objectCount
 	m_objectCount = 0;
 	bLightEnabled = true;
-	//
+
 	m_ghost = new GameObject(GameObject::GO_BALL);
+	//set ghost ball to be active and on starting line
+	m_ghost->pos.Set(m_worldWidth / 2, startingLine_pos, 1);
+	m_ghost->scale.Set(2, 2, 2);
+	m_ghost->mass = 8;
+	m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
+	m_ghost->active = true;
 
 	// Week 13 Exercise 4
 	float angle = Math::HALF_PI;
 	float wallLength = 40;
-	float radius = wallLength * 0.5f / tan(angle * 0.5f);
+	float radius = wallLength * 0.5f / tan(angle * 0.5f) + 20;
 
 	//Create octogonal shape -  Week 13 Exercise 4
 	for (int i = 0; i < 4; ++i)
@@ -42,7 +54,7 @@ void SceneCollision::Init()
 		go->type = GameObject::GO_WALL;
 		go->scale.Set(2.0f, wallLength + 0.9f, 1.f);
 		go->pos = Vector3(radius * cosf(i * angle) + m_worldWidth / 2,
-							radius * sinf(i * angle) + m_worldHeight / 2,
+							radius * sinf(i * angle) + m_worldHeight / 2 + startingLine_pos,	//so wall isnt ovelapping with starting line
 							0.0f);
 		go->normal = Vector3(cosf(i * angle), sinf(i * angle), 0.f);
 		go->color.Set(0, 0, 1);
@@ -140,81 +152,114 @@ void SceneCollision::Update(double dt)
 	windowHeight = Application::GetWindowHeight();
 
 	Vector3 mousePos(x * (m_worldWidth / windowWidth), (windowHeight - y) * (m_worldHeight / windowHeight), 0);
-	//
-	static bool bLButtonState = false;
-	if(!bLButtonState && Application::IsMousePressed(0))
+
+	//vector to store mouse position when left mouse button pressed (replacement for ghost ball used for velocity calculation)
+	Vector3 mouseClickPos;
+
+	//sleepy but yes states mmmmmm
+	switch (currentGameState)
 	{
-		bLButtonState = true;
-		std::cout << "LBUTTON DOWN" << std::endl;
+	case AIMING:
+		{
+			static bool bLButtonState = false;
+			//ghost ball will move about along with mouse without having to hold left mouse
+			m_ghost->pos.x = mousePos.x; //since dont want ball to move into play area while aiming, ghost ball can only move x pos to simulate moving along y axis
 
-		//6b.
-		m_ghost->active = true;
-		m_ghost->pos = mousePos;
-		m_ghost->scale.Set(2, 2, 2);
-		m_ghost->mass = 8;
-		m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
-		//
-	}
-	else if(bLButtonState && !Application::IsMousePressed(0))
-	{
-		bLButtonState = false;
-		std::cout << "LBUTTON UP" << std::endl;
+			if(!bLButtonState && Application::IsMousePressed(0))
+			{
+				bLButtonState = true;
+				std::cout << "LBUTTON DOWN" << std::endl;
 
-		//Exercise 6: spawn small GO_BALL
-		GameObject* go = FetchGO();
+				mouseClickPos = mousePos;
+				m_ghost->pos.x = mouseClickPos.x; //to prevent ball from comtinuing update of x pos... hopefully -> it doesnt work... which makes sense -> loops back every frame back to update position to mouse pos outside of mouse click
+				std::cout << "mouse pos: " << mousePos << std::endl;
+				std::cout << "initial mouse pos stored: " << mouseClickPos << std::endl;
+			}
+			else if(bLButtonState && !Application::IsMousePressed(0))
+			{
+				bLButtonState = false;
+				std::cout << "LBUTTON UP" << std::endl;
 
-		go->type = GameObject::GO_BALL;
-		go->pos = m_ghost->pos;
-		go->vel = m_ghost->pos - mousePos;
+				//Exercise 6: spawn small GO_BALL
+				GameObject* go = FetchGO();
 
-		go->scale = m_ghost->scale;
-		go->mass = m_ghost->mass;
+				go->type = GameObject::GO_BALL;
+				//actual shooting ball starting position
+				go->pos = m_ghost->pos;
+				//
+				go->vel = mouseClickPos - mousePos;
 
-		go->color = m_ghost->color;
-		m_ghost->active = false;
+				go->scale = m_ghost->scale;
+				go->mass = m_ghost->mass;
 
-	}
-	static bool bRButtonState = false;
-	if(!bRButtonState && Application::IsMousePressed(1))
-	{
-		bRButtonState = true;
-		std::cout << "RBUTTON DOWN" << std::endl;
+				go->color = m_ghost->color;
+				m_ghost->active = false;
 
-		//No.9
-		m_ghost->active = true;
-		m_ghost->pos = mousePos;
+				std::cout << go->pos << std::endl;
+				currentGameState = GAME_STATE::SHOOTING;
 
-		m_ghost->scale.Set(3, 3, 3);
-		m_ghost->mass = 27;
-		m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
-		//
-	}
-	else if(bRButtonState && !Application::IsMousePressed(1))
-	{
-		bRButtonState = false;
-		std::cout << "RBUTTON UP" << std::endl;
 
-		//Exercise 10: spawn large GO_BALL
-		GameObject* go = FetchGO();
+			}
+			/*
+			//currently not using big ball
+			static bool bRButtonState = false;
+			if(!bRButtonState && Application::IsMousePressed(1))
+			{
+				bRButtonState = true;
+				std::cout << "RBUTTON DOWN" << std::endl;
 
-		go->type = GameObject::GO_BALL;
-		go->pos = m_ghost->pos;
+				//No.9
+				m_ghost->active = true;
+				m_ghost->pos = mousePos;
 
-		go->vel = m_ghost->pos - mousePos;
-		//go->vel.y = 0;
+				m_ghost->scale.Set(3, 3, 3);
+				m_ghost->mass = 27;
+				m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
+				//
+			}
+			else if(bRButtonState && !Application::IsMousePressed(1))
+			{
+				bRButtonState = false;
+				std::cout << "RBUTTON UP" << std::endl;
 
-		go->scale = m_ghost->scale;
-		go->mass = m_ghost->mass;
-		go->color = m_ghost->color;
-		m_ghost->active = false;
-	}
+				//Exercise 10: spawn large GO_BALL
+				GameObject* go = FetchGO();
 
-	// No. 10
-	if (bRButtonState)
-	{
-		float size = Math::Clamp((mousePos - m_ghost->pos).Length(), 2.0f, 10.0f);
-		m_ghost->scale.Set(size, size, size);
-		m_ghost->mass = size * size * size;
+				go->type = GameObject::GO_BALL;
+				go->pos = m_ghost->pos;
+
+				go->vel = m_ghost->pos - mousePos;
+				//go->vel.y = 0;
+
+				go->scale = m_ghost->scale;
+				go->mass = m_ghost->mass;
+				go->color = m_ghost->color;
+				m_ghost->active = false;
+			}
+			*/
+
+			/*
+			//related to big ball code
+			// No. 10
+			if (bRButtonState)
+			{
+				float size = Math::Clamp((mousePos - m_ghost->pos).Length(), 2.0f, 10.0f);
+				m_ghost->scale.Set(size, size, size);
+				m_ghost->mass = size * size * size;
+			}
+			*/
+			break;
+		}
+	case SHOOTING:
+		{
+			break;
+		}
+	case WAITING:
+		{
+			break;
+		}
+	default:
+		break;
 	}
 
 	//Physics Simulation Section
@@ -350,6 +395,8 @@ bool SceneCollision::CheckCollision(GameObject* go1, GameObject* go2)
 		}
 		case GameObject::GO_WALL:
 		{
+			//fix this part
+			//increase length of detection so it detects full length of wall instead of just the center
 			Vector3 diff = go1->pos - go2->pos;
 			Vector3 axisX = go2->normal;
 			Vector3 axisY = Vector3(-go2->normal.y, go2->normal.x, 0);
@@ -477,10 +524,10 @@ void SceneCollision::RenderGO(GameObject *go)
 		modelStack.Rotate(Math::RadianToDegree(atan2f(go->normal.y, go->normal.x)), 0, 0, 1);
 		modelStack.Scale(go->scale.x, go->scale.y, go->scale.z);
 		meshList[GEO_CUBE]->material.kAmbient.Set(go->color.x, go->color.y, go->color.z);
+		RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(go->health), Color(1, 1, 1),
+			8, (go->pos.x / m_worldWidth) * go->scale.x, go->pos.y / m_worldHeight);
 		RenderMesh(meshList[GEO_CUBE], true);
 		modelStack.PopMatrix();
-		RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(go->health), Color(1, 1, 1
-		), 10, 5, go->pos.y);
 		break;
 	case GameObject::GO_BALL:
 		//Exercise 4: render a sphere using scale and pos
