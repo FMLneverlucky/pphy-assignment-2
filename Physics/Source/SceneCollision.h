@@ -29,6 +29,15 @@ public:
 	// Week 13 Exercise 2
 	void MakeThinWall(float width, float height, const Vector3& normal, const Vector3& pos);
 
+	//destroy ball that return to starting state
+	bool destroyShootingBall(GameObject* go);
+
+	//detect ball outside of window
+	bool reachWindowWidthBoundary(GameObject* go, float windowWidth);
+
+	bool hitWallBoundary(GameObject* go, float min_x, float max_x);
+
+
 protected:
 	enum GAME_STATE
 	{
@@ -54,6 +63,12 @@ protected:
 
 	//starting line
 	float startingLine_pos;
+
+	//vector to store players balls
+	std::vector<GameObject* > playerBallList;
+
+	//store min and max of play area
+	float minX, maxX;
 };
 
 #endif

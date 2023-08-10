@@ -46,8 +46,9 @@ void SceneCollision::Init()
 	float angle = Math::HALF_PI;
 	float wallLength = 40;
 	float radius = wallLength * 0.5f / tan(angle * 0.5f) + 20;
-
+	
 	//Create octogonal shape -  Week 13 Exercise 4
+	/*
 	for (int i = 0; i < 4; ++i)
 	{
 		GameObject* go = FetchGO();
@@ -57,13 +58,16 @@ void SceneCollision::Init()
 							radius * sinf(i * angle) + m_worldHeight / 2 + startingLine_pos,	//so wall isnt ovelapping with starting line
 							0.0f);
 		go->normal = Vector3(cosf(i * angle), sinf(i * angle), 0.f);
-		go->color.Set(0, 0, 1);
-		go->vel.SetZero();
+
 	}
+	*/
 
 	// Week 13 Exercise 4
 	//---------------------------- OBJECT PLACEMENT HERE---------------------------------------
-	MakeThinWall(4.0f, 20.0f, Vector3(0, 1, 0), Vector3(m_worldWidth / 2, m_worldHeight / 2, 0.0f)); //this is red rectangle in the middle
+	MakeThinWall(2.0f, 40.0f, Vector3(1, 0, 0), Vector3(m_worldWidth / 4, m_worldHeight / 2 + startingLine_pos, 0)); //this is red rectangle in the middle
+	minX = m_worldWidth / 4 + 2.f;
+	MakeThinWall(2.0f, 40.0f, Vector3(-1, 0, 0), Vector3(m_worldWidth / 4 * 3, m_worldHeight / 2 + startingLine_pos, 0)); //this is red rectangle in the middle
+	maxX = m_worldWidth / 4 * 3 - 2.f;
 
 	/*
 	//this is the 2 big balls beside each end of red rectangle
@@ -163,7 +167,10 @@ void SceneCollision::Update(double dt)
 		{
 			static bool bLButtonState = false;
 			//ghost ball will move about along with mouse without having to hold left mouse
-			m_ghost->pos.x = mousePos.x; //since dont want ball to move into play area while aiming, ghost ball can only move x pos to simulate moving along y axis
+			if (reachWindowWidthBoundary(m_ghost, windowWidth) == false)
+				m_ghost->pos.x = mousePos.x; //since dont want ball to move into play area while aiming, ghost ball can only move x pos to simulate moving along y axis
+			if (hitWallBoundary(m_ghost, minX, maxX) == false)
+				m_ghost->pos.x = mousePos.x;
 
 			if(!bLButtonState && Application::IsMousePressed(0))
 			{
@@ -174,6 +181,7 @@ void SceneCollision::Update(double dt)
 				m_ghost->pos.x = mouseClickPos.x; //to prevent ball from comtinuing update of x pos... hopefully -> it doesnt work... which makes sense -> loops back every frame back to update position to mouse pos outside of mouse click
 				std::cout << "mouse pos: " << mousePos << std::endl;
 				std::cout << "initial mouse pos stored: " << mouseClickPos << std::endl;
+				std::cout << "object list count: " << m_goList.size() << std::endl;
 			}
 			else if(bLButtonState && !Application::IsMousePressed(0))
 			{
@@ -198,6 +206,7 @@ void SceneCollision::Update(double dt)
 				std::cout << go->pos << std::endl;
 				currentGameState = GAME_STATE::SHOOTING;
 
+				std::cout << "new object list count: " << m_goList.size() << std::endl;
 
 			}
 			/*
@@ -252,15 +261,45 @@ void SceneCollision::Update(double dt)
 		}
 	case SHOOTING:
 		{
+			for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)	//object list
+			{
+				GameObject* go = (GameObject*)*it;
+				if (go->active)
+				{
+					if (destroyShootingBall(go)) //this might bug because function will trigger whenever ball return to starting line
+						currentGameState = WAITING;	//assuming everyball is first ball that return to starting line in shooting state, go to waiting state
+				}
+			}
+
 			break;
 		}
 	case WAITING:
 		{
+			int num_ball = 0;
+			for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+			{
+				GameObject* go = (GameObject*)*it;
+				if (go->type == GameObject::GO_BALL && go->active) //checking there are no balls in play area
+					num_ball++;
+			}
+			if (num_ball == 0)
+			{
+				m_ghost->pos.Set(m_worldWidth / 2, startingLine_pos, 1);
+				m_ghost->scale.Set(2, 2, 2);
+				m_ghost->mass = 8;
+				m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
+				m_ghost->active = true;
+
+				currentGameState = AIMING;
+			}
 			break;
 		}
 	default:
 		break;
 	}
+
+	//Math::Clamp(m_ghost->pos.x, 0.f, m_worldWidth); //an attempt to clamp here x pos of ghost
+	//Math::Clamp(m_ghost->pos.x, minX, maxX); //an attempt to clamp here x pos of ghost
 
 	//Physics Simulation Section
 
@@ -366,6 +405,52 @@ void SceneCollision::MakeThinWall(float width, float height, const Vector3& norm
 	pillar->color.Set(0, 1, 1);
 	pillar->scale.Set(width * 0.5f, width * 0.5f, 1);
 	pillar->pos = pos - height * 0.5f * tangent;
+}
+
+bool SceneCollision::destroyShootingBall(GameObject* go)
+{
+	if (go->active)
+	{
+		if (go->pos.y <= startingLine_pos)
+		{
+			go->active = false;	//ball should be destroyed when return to starting line
+			return true;	//return ball been destroyed
+		}
+	}
+	return false;	//no ball destroyed
+}
+
+bool SceneCollision::reachWindowWidthBoundary(GameObject* go, float windowWidth)
+{
+	if (go->pos.x < 0)
+	{
+		go->pos.x = 0;
+		return true;
+	}
+
+	if (go->pos.x > windowWidth)
+	{
+		go->pos.x = windowWidth;
+		return true;
+	}
+	return false;
+}
+
+bool SceneCollision::hitWallBoundary(GameObject* go, float min_x, float max_x)
+{
+	if (go->pos.x < min_x)
+	{
+		go->pos.x = min_x;
+		return true;
+	}
+
+	if (go->pos.x > max_x)
+	{
+		go->pos.x = max_x;
+		return true;
+	}
+
+	return false;
 }
 
 //Exercise 8a: handle collision between GO_BALL and GO_BALL using velocity swap
