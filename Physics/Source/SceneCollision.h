@@ -37,6 +37,10 @@ public:
 
 	bool hitWallBoundary(GameObject* go, float min_x, float max_x);
 
+	bool skipTurn(GameObject* go);
+
+	void DividePlayArea();
+	void addRowOfBricks();
 
 protected:
 	enum GAME_STATE
@@ -69,6 +73,8 @@ protected:
 
 	//store min and max of play area
 	float minX, maxX;
+
+	std::vector<GameObject* > grid; //stores every possible position a brick can be in
 };
 
 #endif
