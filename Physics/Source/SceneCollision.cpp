@@ -69,6 +69,7 @@ void SceneCollision::Init()
 	MakeThinWall(2.0f, 40.0f, Vector3(-1, 0, 0), Vector3(m_worldWidth / 5 * 4, m_worldHeight / 2 + startingLine_pos, 0)); //this is red rectangle in the middle
 	maxX = m_worldWidth / 5 * 4 - 2.f; //this is right wall and ball bounce off wall inside, so wall position - width
 
+	//DividePlayArea();
 	/*
 	//this is the 2 big balls beside each end of red rectangle
 	//Pillar 1 
@@ -86,7 +87,7 @@ void SceneCollision::Init()
 	pillar->pos = Vector3(m_worldWidth / 2 - m_worldWidth / 4, m_worldHeight / 2, 0);
 
 	*/
-	//addRowOfBricks();
+	addRowOfBricks(5);
 }
 
 GameObject* SceneCollision::FetchGO()
@@ -296,6 +297,9 @@ void SceneCollision::Update(double dt)
 				m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 				m_ghost->active = true;
 
+				addRowOfBricks(5);
+				updateBrickPos();
+
 				currentGameState = AIMING;
 			}
 			break;
@@ -389,7 +393,7 @@ void SceneCollision::Update(double dt)
 // Week 13 Exercise 2 - Make Thin Wall 
 void SceneCollision::MakeThinWall(float width, float height, const Vector3& normal, const Vector3& pos)
 {
-	GameObject* wall = FetchGO();
+	GameObject* wall = FetchGO();	//gameobject created is ball within fetchgo function, but doesnt matter since object type is defined below
 	wall->type = GameObject::GO_WALL;
 	wall->scale.Set(width, height, 1.0f);
 	wall->pos = pos;
@@ -415,13 +419,10 @@ void SceneCollision::MakeThinWall(float width, float height, const Vector3& norm
 
 bool SceneCollision::destroyShootingBall(GameObject* go)//destroy all balls that return to starting line after player turn
 {
-	if (go->active)
+	if (go->pos.y <= startingLine_pos)
 	{
-		if (go->pos.y <= startingLine_pos)
-		{
-			go->active = false;	//ball should be destroyed when return to starting line
-			return true;	//return ball been destroyed
-		}
+		ReturnGO(go);	//just found out this function sets active state false and subtracts object count so yea
+		return true;	//return ball been destroyed
 	}
 	return false;	//no ball destroyed
 }
@@ -463,7 +464,7 @@ bool SceneCollision::skipTurn(GameObject* go)
 {
 	if (Application::IsKeyPressed('E'))
 	{
-		go->active = false;
+		ReturnGO(go);
 		return true;
 	}
 	return false;
@@ -472,6 +473,8 @@ bool SceneCollision::skipTurn(GameObject* go)
 /*
 this function is to define play area (within walls from top of window to starting line)
 & divide the area into columns and rows
+since m_golist handles all object behaviour, this function is solely used to store ghost positions 
+-> store position, spawn actual bricks in m_golist
 | 1 ! 2 ! 3 ! 4 ! 5 !|
 ----------------------
 |	!	!	!	!	!| 1
@@ -484,27 +487,91 @@ this function is to define play area (within walls from top of window to startin
 */
 void SceneCollision::DividePlayArea()
 {
+	float playareaWidth = maxX - minX;
 
+	//placeholder object used to calculate amount of bricks that can fit within play area
+	//push this object into grid vector NOT M_GOLIST VECTOR
+	GameObject* ghostbrick = new GameObject(GameObject::GO_P);	//since is placeholder, dont use fetchgo
+	ghostbrick->type = GameObject::GO_P;
+	ghostbrick->scale.Set(5, 5, 1);
+
+	int numCol = playareaWidth / 2 * ghostbrick->scale.x;
+	int numRow = (m_worldHeight - startingLine_pos) / ghostbrick->scale.y - ghostbrick->scale.y;
+
+	for (int currentRow = 0; currentRow < numRow; currentRow++)
+	{
+		for (int currentCol = 0; currentCol < numCol; currentCol++)
+		{
+			//setting position of bricks in row
+			if (currentCol == 0)
+			{
+				ghostbrick->pos = Vector3(minX + ghostbrick->scale.x, m_worldHeight - ghostbrick->scale.y, 0);	//top left of playarea
+			}
+			else//for bricks not in first col
+			{
+				//get position of first col brick to calculate position of rest of bricks
+
+				GameObject* getFirstCol_brick = new GameObject(GameObject::GO_P);
+				//this is 1st row 1st col brick, so is first object stored in vector list
+				if (currentRow == 0)
+				{
+					getFirstCol_brick = grid.front();
+				}
+				ghostbrick->pos = Vector3(getFirstCol_brick->pos.x + (2 * currentCol * ghostbrick->scale.x), m_worldHeight - ghostbrick->scale.y, 0);
+			}
+			//for testing purposes
+			ghostbrick->color.Set(1, 1, 1);
+			ghostbrick->active = true;
+
+			//pushback brick info into grid vector
+			grid.push_back(ghostbrick);
+		}
+	}
 }
 
-void SceneCollision::addRowOfBricks()
+void SceneCollision::addRowOfBricks(int hp)
 {
+	int RandomNum = Math::RandIntMinMax(1, 5);
+
 	GameObject* brick = FetchGO();
 	brick->type = GameObject::GO_P;
 	brick->color.Set(1, 0.5f, 0);
 	brick->scale.Set(5, 5, 1);
-	brick->pos = Vector3(m_worldWidth / 5 + brick->scale.x + 2.f, m_worldHeight / 2, 0); //2 is the width of the wall
-	brick->health = 5;
+	brick->health = hp;
 
+	brick->pos = Vector3(minX + brick->scale.x, m_worldHeight - brick->scale.y, 0);
+
+	for (int numBricks = 0; numBricks < RandomNum; numBricks++)
+	{
+			GameObject* brick2 = FetchGO();
+			brick2->type = GameObject::GO_P;
+			brick2->color.Set(1, 0.5f, 0);
+			brick2->scale.Set(5, 5, 1);
+			brick2->health = hp;
+			brick2->pos = Vector3(brick->pos.x + ((2 * numBricks) * brick2->scale.x), m_worldHeight - brick2->scale.y, 0); //x2 scale because center of object is well... at the 
+	}
+	std::cout << RandomNum << std::endl;
+	/*
 	GameObject* brick2 = FetchGO();
 	brick2->type = GameObject::GO_P;
-	brick2->color.Set(1, 0.5f, 0);
+	brick2->color.Set(1, 0.1f, 0);
 	brick2->scale.Set(5, 5, 1);
-	brick2->pos = Vector3((m_worldWidth / 5) + brick->scale.x + 2.f, m_worldHeight / 2, 0); //2 is the width of the wall
-	brick2->health = 5;
+center
+	brick2->health = hp;
+	*/
+}
 
-	//int RandomNum = Math::RandIntMinMax(1, 5);
-
+void SceneCollision::updateBrickPos()
+{
+	for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	{
+		GameObject* go = (GameObject*)*it;
+		if (go->active && (go->type == GameObject::GO_P))
+		{
+			go->pos.y = go->pos.y + 2 * go->scale.y;
+			std::cout << "new pos: " << go->pos << std::endl;
+		}
+	}
 }
 
 //Exercise 8a: handle collision between GO_BALL and GO_BALL using velocity swap
@@ -726,7 +793,6 @@ void SceneCollision::Render()
 			RenderGO(go);
 		}
 	}
-
 	//On screen text
 	std::ostringstream ss;
 

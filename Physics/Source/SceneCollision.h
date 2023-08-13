@@ -40,7 +40,9 @@ public:
 	bool skipTurn(GameObject* go);
 
 	void DividePlayArea();
-	void addRowOfBricks();
+	void addRowOfBricks(int hp);
+
+	void updateBrickPos();
 
 protected:
 	enum GAME_STATE
@@ -67,9 +69,6 @@ protected:
 
 	//starting line
 	float startingLine_pos;
-
-	//vector to store players balls
-	std::vector<GameObject* > playerBallList;
 
 	//store min and max of play area
 	float minX, maxX;
