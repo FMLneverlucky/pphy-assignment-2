@@ -50,6 +50,7 @@ protected:
 		AIMING, //before ball release
 		SHOOTING, //after ball release
 		WAITING, //after 1st ball returns to starting line
+		GAME_OVER,
 		NUM_STATES
 	};
 

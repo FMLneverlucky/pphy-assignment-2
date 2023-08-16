@@ -156,36 +156,41 @@ void SceneCollision::Update(double dt)
 	//vector to store mouse position when left mouse button pressed (replacement for ghost ball used for velocity calculation)
 	Vector3 mouseClickPos;
 
+
 	static bool bLButtonState = false;
 
-	// since ghost ball cannot move out of wall boundary, no need to prevent ball from going out of wall boundary -> for some reason ballkeeps teleporting back and forth mouse pos and clamped pos without this function
-	if (reachWindowWidthBoundary(m_ghost, windowWidth) == false)
+	if (reachWindowWidthBoundary(m_ghost, windowWidth) == false && !bLButtonState)	//adding check mouse state just in case
 		m_ghost->pos.x = mousePos.x; //since dont want ball to move into play area while aiming, ghost ball can only move x pos to simulatemoving along y axis
 
+
+	if (hitWallBoundary(m_ghost, minX, maxX) == false && !bLButtonState)	//ghost ball can pnly move if within wall boundary and mouse not clicked... in theory
+		m_ghost->pos.x = mousePos.x;
+
+	/*
 	if (bLButtonState == false)
 	{
 
 		//ghost ball will move about along with mouse when left mouse button not clicked
 		m_ghost->pos.x = mousePos.x;
 	}
+	*/
 
 	//sleepy but yes states mmmmmm
 	switch (currentGameState)
 	{
 	case AIMING:
 		{
-			if (hitWallBoundary(m_ghost, minX, maxX) == false)
-				m_ghost->pos.x = mousePos.x;
+		//TODO: fix ghost ball moving while mouse button clicked
+		// since ghost ball cannot move out of wall boundary, no need to prevent ball from going out of wall boundary -> for some reason ballkeeps teleporting back and forth mouse pos and clamped pos without this function
 
-
+			//TODO: limit angle player can shoot ball so ball cannot bounce outside walls
 			if(!bLButtonState && Application::IsMousePressed(0))
 			{
 				bLButtonState = true;
 				std::cout << "LBUTTON DOWN" << std::endl;
 
 				mouseClickPos = mousePos;
-				//m_ghost->pos.x = m_ghost->pos.x; //to prevent ball from comtinuing update of x pos... hopefully -> it doesnt work... which makes sense -> loops back every frame back to update position to mouse pos outside of mouse click
-				std::cout << "initial mouse pos stored: " << mouseClickPos << std::endl;
+				std::cout << "ghost ball pos: " << m_ghost->pos.x << std::endl;
 
 				std::cout << "object list count: " << m_goList.size() << std::endl;
 			}
@@ -297,11 +302,15 @@ void SceneCollision::Update(double dt)
 				m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 				m_ghost->active = true;
 
+				updateBrickPos();	//if add bricks is becfore update, new row of bricks will also update its position -> not as intended
 				addRowOfBricks(5);
-				updateBrickPos();
-
+				//TODO: fix brick endless update problem
 				currentGameState = AIMING;
 			}
+			break;
+		}
+	case GAME_OVER:
+		{
 			break;
 		}
 	default:
@@ -535,7 +544,7 @@ void SceneCollision::addRowOfBricks(int hp)
 
 	GameObject* brick = FetchGO();
 	brick->type = GameObject::GO_P;
-	brick->color.Set(1, 0.5f, 0);
+	brick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 	brick->scale.Set(5, 5, 1);
 	brick->health = hp;
 
@@ -545,7 +554,7 @@ void SceneCollision::addRowOfBricks(int hp)
 	{
 			GameObject* brick2 = FetchGO();
 			brick2->type = GameObject::GO_P;
-			brick2->color.Set(1, 0.5f, 0);
+			brick2->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 			brick2->scale.Set(5, 5, 1);
 			brick2->health = hp;
 			brick2->pos = Vector3(brick->pos.x + ((2 * numBricks) * brick2->scale.x), m_worldHeight - brick2->scale.y, 0); //x2 scale because center of object is well... at the 
@@ -568,8 +577,15 @@ void SceneCollision::updateBrickPos()
 		GameObject* go = (GameObject*)*it;
 		if (go->active && (go->type == GameObject::GO_P))
 		{
-			go->pos.y = go->pos.y + 2 * go->scale.y;
-			std::cout << "new pos: " << go->pos << std::endl;
+			if (currentGameState == WAITING)
+			{
+				go->pos.y = go->pos.y + 2 * go->scale.y;
+				std::cout << "new pos: " << go->pos << std::endl;	
+				//checking how long brick updates position -> brick still updates position even after game state change
+				//TODO: handle brick stop updating when game state change here
+			}
+			else
+				break;
 		}
 	}
 }
@@ -614,7 +630,7 @@ bool SceneCollision::CheckCollision(GameObject* go1, GameObject* go2)
 
 			return go1->vel.Dot(axisX) >= 0 && //Check 1: Travelling towards the wall ?
 				go2->scale.x * 0.5 + go1->scale.x > -diff.Dot(axisX) && //Check 2: Radius + Thickness vs Distance
-				go2->scale.y * 0.5 > Math::FAbs(diff.Dot(axisY)); //Check 3: Length check
+				go2->scale.y > Math::FAbs(diff.Dot(axisY)); //Check 3: Length check
 		}
 	}
 /* // Week 12
@@ -801,10 +817,6 @@ void SceneCollision::Render()
 ), 3, 0, 9);
 
 	//Exercise 8c: Render initial and final momentum
-
-	ss.precision(3);
-	ss << "Speed: " << m_speed;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 0, 6);
 	
 	ss.precision(5);
 	ss << "FPS: " << fps;
