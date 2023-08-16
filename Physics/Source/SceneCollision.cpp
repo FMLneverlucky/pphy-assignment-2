@@ -180,8 +180,6 @@ void SceneCollision::Update(double dt)
 	{
 	case AIMING:
 		{
-		//TODO: fix ghost ball moving while mouse button clicked
-		// since ghost ball cannot move out of wall boundary, no need to prevent ball from going out of wall boundary -> for some reason ballkeeps teleporting back and forth mouse pos and clamped pos without this function
 
 			//TODO: limit angle player can shoot ball so ball cannot bounce outside walls
 			if(!bLButtonState && Application::IsMousePressed(0))
@@ -328,7 +326,8 @@ void SceneCollision::Update(double dt)
 		if(go->active)
 		{
 			//Exercise 7a: implement movement for game objects
-			go->pos += go->vel * dt * m_speed;
+			if (go->type == GameObject::GO_BALL) //trying to prevent brick from getting position update
+				go->pos += go->vel * dt * m_speed;
 			
 			//Exercise 7b: handle out of bound game objects
 			/*if (go->pos.x < 0 - go->scale.x || go->pos.x > m_worldWidth + go->scale.x || go->pos.y < 0 - go->scale.y || go->pos.y > m_worldHeight + go->pos.y)
@@ -362,6 +361,14 @@ void SceneCollision::Update(double dt)
 				ReturnGO(go);
 				continue;
 			}
+
+			/*
+			//brick endless position update debugging
+			if (go->type == GameObject::GO_P && go->vel != (0, 0, 0))
+			{
+				std::cout << "checking brick velocity: " << go->vel << std::endl;
+			}
+			*/
 
 			GameObject* go2 = nullptr;
 			for (std::vector<GameObject*>::iterator it2 = it + 1; it2 != m_goList.end(); ++it2)
@@ -550,16 +557,20 @@ void SceneCollision::addRowOfBricks(int hp)
 
 	brick->pos = Vector3(minX + brick->scale.x, m_worldHeight - brick->scale.y, 0);
 
-	for (int numBricks = 0; numBricks < RandomNum; numBricks++)
+	std::cout << "pos of first brick in new row: " << brick->pos << std::endl;
+
+	for (int numBricks = 1; numBricks != RandomNum; ++numBricks) //starts at 1 because loop is making 1 more brick than it should and my brain empty now, cant think of better way to fix
 	{
 			GameObject* brick2 = FetchGO();
 			brick2->type = GameObject::GO_P;
 			brick2->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 			brick2->scale.Set(5, 5, 1);
 			brick2->health = hp;
-			brick2->pos = Vector3(brick->pos.x + ((2 * numBricks) * brick2->scale.x), m_worldHeight - brick2->scale.y, 0); //x2 scale because center of object is well... at the 
+			brick2->pos = Vector3(brick->pos.x + ((2 * numBricks) * brick2->scale.x), m_worldHeight - brick2->scale.y, 0); //x2 scale because center of object is well... at the cneter
+			std::cout << "pos of following brick in row: " << brick2->pos << std::endl;
+
 	}
-	std::cout << RandomNum << std::endl;
+	std::cout << "num of bricks added: " << RandomNum << std::endl;
 	/*
 	GameObject* brick2 = FetchGO();
 	brick2->type = GameObject::GO_P;
@@ -575,17 +586,15 @@ void SceneCollision::updateBrickPos()
 	for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
 		GameObject* go = (GameObject*)*it;
-		if (go->active && (go->type == GameObject::GO_P))
+		if (go->active && (go->type == GameObject::GO_P))	//looking for bricks within object vector
 		{
 			if (currentGameState == WAITING)
 			{
 				go->pos.y = go->pos.y + 2 * go->scale.y;
-				std::cout << "new pos: " << go->pos << std::endl;	
+				std::cout << "new pos: " << go->pos << std::endl;
 				//checking how long brick updates position -> brick still updates position even after game state change
 				//TODO: handle brick stop updating when game state change here
 			}
-			else
-				break;
 		}
 	}
 }
