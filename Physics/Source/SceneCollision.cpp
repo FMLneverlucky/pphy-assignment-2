@@ -362,14 +362,6 @@ void SceneCollision::Update(double dt)
 				continue;
 			}
 
-			/*
-			//brick endless position update debugging
-			if (go->type == GameObject::GO_P && go->vel != (0, 0, 0))
-			{
-				std::cout << "checking brick velocity: " << go->vel << std::endl;
-			}
-			*/
-
 			GameObject* go2 = nullptr;
 			for (std::vector<GameObject*>::iterator it2 = it + 1; it2 != m_goList.end(); ++it2)
 			{
@@ -579,6 +571,13 @@ void SceneCollision::addRowOfBricks(int hp)
 center
 	brick2->health = hp;
 	*/
+	for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	{
+		GameObject* go = (GameObject*)*it;
+		std::cout << go->type << std::endl;
+	}
+	std::cout << "total objects present: " << m_goList.size();
+
 }
 
 void SceneCollision::updateBrickPos()
