@@ -69,7 +69,7 @@ void SceneCollision::Init()
 	MakeThinWall(2.0f, 40.0f, Vector3(-1, 0, 0), Vector3(m_worldWidth / 5 * 4, m_worldHeight / 2 + startingLine_pos, 0)); //this is red rectangle in the middle
 	maxX = m_worldWidth / 5 * 4 - 2.f; //this is right wall and ball bounce off wall inside, so wall position - width
 
-	//DividePlayArea();
+	DividePlayArea();
 	/*
 	//this is the 2 big balls beside each end of red rectangle
 	//Pillar 1 
@@ -87,7 +87,7 @@ void SceneCollision::Init()
 	pillar->pos = Vector3(m_worldWidth / 2 - m_worldWidth / 4, m_worldHeight / 2, 0);
 
 	*/
-	addRowOfBricks(5);
+	//addRowOfBricks(5);
 }
 
 GameObject* SceneCollision::FetchGO()
@@ -300,8 +300,8 @@ void SceneCollision::Update(double dt)
 				m_ghost->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 				m_ghost->active = true;
 
-				updateBrickPos();	//if add bricks is becfore update, new row of bricks will also update its position -> not as intended
-				addRowOfBricks(5);
+				//updateBrickPos();	//if add bricks is becfore update, new row of bricks will also update its position -> not as intended
+				//addRowOfBricks(5);
 				//TODO: fix brick endless update problem
 				currentGameState = AIMING;
 			}
@@ -502,39 +502,39 @@ void SceneCollision::DividePlayArea()
 	GameObject* ghostbrick = new GameObject(GameObject::GO_P);	//since is placeholder, dont use fetchgo
 	ghostbrick->type = GameObject::GO_P;
 	ghostbrick->scale.Set(5, 5, 1);
+	ghostbrick->health = 1;
 
-	int numCol = playareaWidth / 2 * ghostbrick->scale.x;
-	int numRow = (m_worldHeight - startingLine_pos) / ghostbrick->scale.y - ghostbrick->scale.y;
+	int numCol = playareaWidth / (2 * ghostbrick->scale.x);
+	int numRow = ((m_worldHeight - ghostbrick->scale.y) - startingLine_pos) / (2 * ghostbrick->scale.y);	//playarea height is from top of screen to starting line
 
-	for (int currentRow = 0; currentRow < numRow; currentRow++)
+	std::cout << "num of column in playarea: " << numCol << " ,num of row in playarea: " << numRow << std::endl;
+
+	for (int currentRow = 0; currentRow < numRow; currentRow++)	//post increment because y value calculation relies on current row value -> like row 1
 	{
+		std::cout << "row count: " << currentRow << std::endl;
+		//all bricks in a row will have same y value -> set y value everytime loop through row
+		//formula for setting y value -> 1st row = worldheight - scale -> n row = worldheight - 2(row num)*scale[number of bricks] - scale [initial scale that sets bricks within window]
+		float y_pos = m_worldHeight - (2 * currentRow * ghostbrick->scale.y) - ghostbrick->scale.y;
+
 		for (int currentCol = 0; currentCol < numCol; currentCol++)
 		{
-			//setting position of bricks in row
-			if (currentCol == 0)
-			{
-				ghostbrick->pos = Vector3(minX + ghostbrick->scale.x, m_worldHeight - ghostbrick->scale.y, 0);	//top left of playarea
-			}
-			else//for bricks not in first col
-			{
-				//get position of first col brick to calculate position of rest of bricks
+			//calculating x position of bricks in a row
+			//1st col = min x + scale [starting from inner wall]
+			//2nd col = min x + 2 * scale [skip 1 brick] + scale [initial scale to set brick within wall]
+			//formula = min x + 2 * scale * currentcol + scale
+			float x_pos = minX + (2 * ghostbrick->scale.x * currentCol) + ghostbrick->scale.x;
 
-				GameObject* getFirstCol_brick = new GameObject(GameObject::GO_P);
-				//this is 1st row 1st col brick, so is first object stored in vector list
-				if (currentRow == 0)
-				{
-					getFirstCol_brick = grid.front();
-				}
-				ghostbrick->pos = Vector3(getFirstCol_brick->pos.x + (2 * currentCol * ghostbrick->scale.x), m_worldHeight - ghostbrick->scale.y, 0);
-			}
+			ghostbrick->pos = Vector3(x_pos, y_pos, 0);
 			//for testing purposes
-			ghostbrick->color.Set(1, 1, 1);
+			ghostbrick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
 			ghostbrick->active = true;
 
 			//pushback brick info into grid vector
 			grid.push_back(ghostbrick);
+			std::cout << ghostbrick->pos << std::endl;
 		}
 	}
+	std::cout << "total num of brick position stored in grid: " << grid.size() << std::endl;
 }
 
 void SceneCollision::addRowOfBricks(int hp)
@@ -817,6 +817,16 @@ void SceneCollision::Render()
 			RenderGO(go);
 		}
 	}
+
+	for (std::vector<GameObject*>::iterator it = grid.begin(); it != grid.end(); ++it)
+	{
+		GameObject* go = (GameObject*)*it;
+		if (go->active)
+		{
+			RenderGO(go);
+		}
+	}
+
 	//On screen text
 	std::ostringstream ss;
 
