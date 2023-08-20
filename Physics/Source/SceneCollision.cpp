@@ -499,13 +499,13 @@ void SceneCollision::DividePlayArea()
 
 	//placeholder object used to calculate amount of bricks that can fit within play area
 	//push this object into grid vector NOT M_GOLIST VECTOR
-	GameObject* ghostbrick = new GameObject(GameObject::GO_P);	//since is placeholder, dont use fetchgo
-	ghostbrick->type = GameObject::GO_P;
-	ghostbrick->scale.Set(5, 5, 1);
-	ghostbrick->health = 1;
+	GameObject* templateBrick = new GameObject(GameObject::GO_P);	//since is placeholder, dont use fetchgo
+	templateBrick->type = GameObject::GO_P;
+	templateBrick->scale.Set(5, 5, 1);
 
-	int numCol = playareaWidth / (2 * ghostbrick->scale.x);
-	int numRow = ((m_worldHeight - ghostbrick->scale.y) - startingLine_pos) / (2 * ghostbrick->scale.y);	//playarea height is from top of screen to starting line
+	int numCol = playareaWidth / (2 * templateBrick->scale.x);
+	int numRow = (((m_worldHeight - templateBrick->scale.y) - startingLine_pos) / (2 * templateBrick->scale.y)) / 2;	//playarea height is from top of screen to starting line
+	//very messy brackets yes -> divide by 2 at the end so number row of bricks created is halved -> so entire playarea isnt filled with bricks
 
 	std::cout << "num of column in playarea: " << numCol << " ,num of row in playarea: " << numRow << std::endl;
 
@@ -514,7 +514,7 @@ void SceneCollision::DividePlayArea()
 		std::cout << "row count: " << currentRow << std::endl;
 		//all bricks in a row will have same y value -> set y value everytime loop through row
 		//formula for setting y value -> 1st row = worldheight - scale -> n row = worldheight - 2(row num)*scale[number of bricks] - scale [initial scale that sets bricks within window]
-		float y_pos = m_worldHeight - (2 * currentRow * ghostbrick->scale.y) - ghostbrick->scale.y;
+		float y_pos = m_worldHeight - (2 * currentRow * templateBrick->scale.y) - templateBrick->scale.y;
 
 		for (int currentCol = 0; currentCol < numCol; currentCol++)
 		{
@@ -522,16 +522,21 @@ void SceneCollision::DividePlayArea()
 			//1st col = min x + scale [starting from inner wall]
 			//2nd col = min x + 2 * scale [skip 1 brick] + scale [initial scale to set brick within wall]
 			//formula = min x + 2 * scale * currentcol + scale
-			float x_pos = minX + (2 * ghostbrick->scale.x * currentCol) + ghostbrick->scale.x;
+			float x_pos = minX + (2 * templateBrick->scale.x * currentCol) + templateBrick->scale.x;
 
-			ghostbrick->pos = Vector3(x_pos, y_pos, 0);
+			GameObject* placeholder_brick = new GameObject(GameObject::GO_P);	//need to create new object every time because using same object to set position will still be a single object -> only 1 object rendered
+			placeholder_brick->type = GameObject::GO_P;
+			placeholder_brick->scale.Set(5, 5, 1);
+
+			placeholder_brick->pos = Vector3(x_pos, y_pos, 0);
 			//for testing purposes
-			ghostbrick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
-			ghostbrick->active = true;
+			placeholder_brick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
+			placeholder_brick->active = true;
+
 
 			//pushback brick info into grid vector
-			grid.push_back(ghostbrick);
-			std::cout << ghostbrick->pos << std::endl;
+			grid.push_back(placeholder_brick);
+			std::cout << placeholder_brick->pos << std::endl;
 		}
 	}
 	std::cout << "total num of brick position stored in grid: " << grid.size() << std::endl;
