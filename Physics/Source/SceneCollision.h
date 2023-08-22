@@ -32,6 +32,9 @@ public:
 	//destroy ball that return to starting state
 	bool destroyShootingBall(GameObject* go);
 
+	//destroy any objects with no health
+	void destroyObject();
+
 	//detect ball outside of window
 	bool reachWindowWidthBoundary(GameObject* go, float windowWidth);
 
@@ -75,6 +78,9 @@ protected:
 	float minX, maxX;
 
 	std::vector<GameObject* > grid; //stores every possible position a brick can be in
+
+	//powerup
+	bool penetration;
 };
 
 #endif

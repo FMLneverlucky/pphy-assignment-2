@@ -29,6 +29,8 @@ void SceneCollision::Init()
 
 	//this is starting line where player release ball
 	startingLine_pos = 10.f; //this is a y value
+	//no powerup by default
+	penetration = false;
 
 	//Exercise 1: initialize m_objectCount
 	m_objectCount = 0;
@@ -70,7 +72,20 @@ void SceneCollision::Init()
 	maxX = m_worldWidth / 5 * 4 - 2.f; //this is right wall and ball bounce off wall inside, so wall position - width
 
 	DividePlayArea();
-	/*
+
+	//making bricks in m_goList which takes stored position from grid vector
+	for (std::vector<GameObject*>::iterator it = grid.begin(); it != grid.end(); ++it)
+	{
+		GameObject* go = (GameObject*)*it;
+		
+		GameObject* init_brick = FetchGO();	//this function makes new objects right? ...right?
+		init_brick->type = go->type;
+		init_brick->pos = go->pos;
+		init_brick->scale = go->scale;
+		init_brick->health = go->health;
+		init_brick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
+	}
+		/*
 	//this is the 2 big balls beside each end of red rectangle
 	//Pillar 1 
 	GameObject* pillar = FetchGO();
@@ -396,6 +411,8 @@ void SceneCollision::Update(double dt)
 		
 	}
 
+	destroyObject();
+
 }
 
 // Week 13 Exercise 2 - Make Thin Wall 
@@ -433,6 +450,23 @@ bool SceneCollision::destroyShootingBall(GameObject* go)//destroy all balls that
 		return true;	//return ball been destroyed
 	}
 	return false;	//no ball destroyed
+}
+
+//destroy any object in m_golist with no health
+void SceneCollision::destroyObject()
+{
+	for (std::vector<GameObject*>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	{
+		GameObject* go = (GameObject*) *it;
+
+		if (go->health <= 0)
+		{
+			ReturnGO(go);
+			//idk y no one does this anymore, but im gonna do it
+			go = nullptr;
+			delete go;
+		}
+	}
 }
 
 bool SceneCollision::reachWindowWidthBoundary(GameObject* go, float windowWidth)
@@ -524,19 +558,13 @@ void SceneCollision::DividePlayArea()
 			//formula = min x + 2 * scale * currentcol + scale
 			float x_pos = minX + (2 * templateBrick->scale.x * currentCol) + templateBrick->scale.x;
 
-			GameObject* placeholder_brick = new GameObject(GameObject::GO_P);	//need to create new object every time because using same object to set position will still be a single object -> only 1 object rendered
-			placeholder_brick->type = GameObject::GO_P;
-			placeholder_brick->scale.Set(5, 5, 1);
-
-			placeholder_brick->pos = Vector3(x_pos, y_pos, 0);
-			//for testing purposes
-			placeholder_brick->color.Set(Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1), Math::RandFloatMinMax(0, 1));
-			placeholder_brick->active = true;
-
+			GameObject* ghostbrick = new GameObject(GameObject::GO_P);
+			ghostbrick->pos = Vector3(x_pos, y_pos, 0);
+			ghostbrick->scale = templateBrick->scale;
 
 			//pushback brick info into grid vector
-			grid.push_back(placeholder_brick);
-			std::cout << placeholder_brick->pos << std::endl;
+			grid.push_back(ghostbrick);
+			std::cout << ghostbrick->pos << std::endl;
 		}
 	}
 	std::cout << "total num of brick position stored in grid: " << grid.size() << std::endl;
@@ -727,20 +755,14 @@ void SceneCollision::CollisionResponse(GameObject* go1, GameObject* go2)
 		}
 		case GameObject::GO_P:
 		{
-   			if (go2->health > 1)
+			go2->health -= 1;
+
+			if (penetration == false)
 			{
-				//this is pillar collision response
 				Vector3 n = (go2->pos - go1->pos).Normalize();
 				go1->vel = u1 - (2.0 * u1.Dot(n)) * n;
+			}
 
-				//brick reduce 1 health when ball bounce off brick
-				go2->health -= 1;
-			}
-			else
-			{
-				go1->vel = u1 - (2.0 * u1.Dot(go2->normal)) * go2->normal;
-				go2->active = false;
-			}
 			break;
 		}
 	}
@@ -818,15 +840,6 @@ void SceneCollision::Render()
 	{
 		GameObject *go = (GameObject *)*it;
 		if(go->active)
-		{
-			RenderGO(go);
-		}
-	}
-
-	for (std::vector<GameObject*>::iterator it = grid.begin(); it != grid.end(); ++it)
-	{
-		GameObject* go = (GameObject*)*it;
-		if (go->active)
 		{
 			RenderGO(go);
 		}

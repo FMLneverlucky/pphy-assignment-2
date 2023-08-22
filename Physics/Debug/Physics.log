@@ -1,13 +1,12 @@
 ﻿  SceneCollision.cpp
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(154,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(154,21): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(162,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(330,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(506,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(507,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(719,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(725,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(734,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(741,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(661): warning C4715: 'SceneCollision::CheckCollision': not all control paths return a value
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(169,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(169,21): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(177,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(345,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(540,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(541,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(747,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(753,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(763,26): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Physics\Source\SceneCollision.cpp(689): warning C4715: 'SceneCollision::CheckCollision': not all control paths return a value
   Physics.vcxproj -> C:\Users\jingj\OneDrive\Desktop\pphys ass 2\pphy-assignment-2\Debug\Physics.exe
